@@ -12,8 +12,8 @@ load File.join(File.dirname(__FILE__), "buildwise.rake")
 ## Settings: Customize here...
 # 
 BUILDWISE_URL = ENV["BUILDWISE_MASTER"] || "http://buildwise.dev"
-# BUILDWISE_QUICK_PROJECT_ID = "agiletravel-quick-build-rspec"
-# BUILDWISE_FULL_PROJECT_ID  = "agiletravel-full-build-rspec" # import to set for full build
+BUILDWISE_QUICK_PROJECT_ID = "grouphq"
+BUILDWISE_FULL_PROJECT_ID  = "grouphq" # import to set for full build
  
 FULL_BUILD_MAX_TIME = ENV["DISTRIBUTED_MAX_BUILD_TIME"].to_i || 60 * 60   # max build time, over this, time out
 FULL_BUILD_CHECK_INTERVAL =  ENV["DISTRIBUTED_BUILD_CHECK_INTERVAL"].to_i || 20  # check interval for build complete
