@@ -25,7 +25,7 @@ $test_dir =  File.expand_path( File.join( File.dirname(__FILE__), "spec" ) )  # 
 #
 def excluded_spec_files
   # NOTE, testing only for faster develping agent, remove a couple of test later
-  ["debugging_spec.rb", "03_passenger_spec.rb"]
+  ["debugging_spec.rb"]
 end
 
 def all_specs
@@ -35,11 +35,7 @@ end
 def specs_for_quick_build
   # list test files to be run in a quick build, leave the caller to set full path
   [
-    "01_login_spec.rb", 
-    "02_flight_spec.rb",
-    "03_passenger_spec.rb",
-    "04_payment_spec.rb",
-    "not_exists_spec.rb" # will exclude non-exists test quietly
+    "01_view_groups_spec.rb"
   ]
 end
 

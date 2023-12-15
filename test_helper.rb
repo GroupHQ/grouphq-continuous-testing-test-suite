@@ -11,7 +11,7 @@ require "#{File.dirname(__FILE__)}/pages/abstract_page.rb"
 Dir["#{File.dirname(__FILE__)}/pages/*_page.rb"].each { |file| load file }
 
 # The default base URL for running from command line or continuous build process
-$BASE_URL = "http://localhost:4200"
+$BASE_URL = "https://localhost"
 
 # This is the helper for your tests, every test file will include all the operation
 # defined here.
