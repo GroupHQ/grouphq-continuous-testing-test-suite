@@ -1,6 +1,6 @@
 # spec_helper.rb
 #
-# Different from test_helper.rb in up directory, this is a speical file to configure RSpec execution.
+# Different from test_helper.rb in up directory, this is a special file to configure RSpec execution.
 # This one tell RSpec include stdout and stderr in test report.
 #
 

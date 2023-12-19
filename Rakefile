@@ -35,7 +35,8 @@ end
 def specs_for_quick_build
   # list test files to be run in a quick build, leave the caller to set full path
   [
-    "01_view_groups_spec.rb"
+    "01_view_groups_spec.rb",
+    "02_navigate_pages_spec.rb"
   ]
 end
 
