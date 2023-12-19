@@ -52,11 +52,14 @@ class GroupsPage < AbstractPage
 
     sort_box = driver.find_element(:css, "[data-test='group-utility-bar-select']")
     sort_box.click()
+    
+    @wait.until { driver.find_elements(:css, "[data-test='group-utility-bar-select-option']").any? }
+    
     option_boxes = driver.find_elements(:css, "[data-test='group-utility-bar-select-option']")
     option_box = option_boxes.find do |option|
       option.text == normalized_option
     end
-
+    raise "No option found for sort option: #{sort_option}" if option_box.nil?
     option_box.click
   end
   
@@ -104,7 +107,6 @@ class GroupsPage < AbstractPage
   
   def click_logo(screen_type)
     data_test_id = screen_type == :tablet || screen_type == :handset ? "site-title-compact" : "site-title-default"
-    #@wait.until { driver.find_element(:css, "[data-test='#{data_test_id}']").displayed? }
     driver.find_element(:css, "[data-test='#{data_test_id}']").click
   end
 
