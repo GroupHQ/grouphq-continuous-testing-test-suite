@@ -51,12 +51,12 @@ class GroupsPage < AbstractPage
     end
 
     sort_box = driver.find_element(:css, "[data-test='group-utility-bar-select']")
-    sort_box.click()
-    
-    @wait.until { driver.find_elements(:css, "[data-test='group-utility-bar-select-option']").any? }
-    
+    @wait.until { sort_box.displayed? && sort_box.enabled? }
+    sort_box.click
+
     option_boxes = driver.find_elements(:css, "[data-test='group-utility-bar-select-option']")
     option_box = option_boxes.find do |option|
+      @wait.until { option.displayed? && option.enabled? }
       option.text == normalized_option
     end
     raise "No option found for sort option: #{sort_option}" if option_box.nil?
@@ -64,19 +64,31 @@ class GroupsPage < AbstractPage
   end
   
   def click_nav_menu
-    driver.find_element(:css, "[aria-label='Toggle menu']").click
+    menu_icon = driver.find_element(:css, "[aria-label='Toggle menu']")
+    @wait.until { menu_icon.enabled? && menu_icon.displayed? }
+    menu_icon.click
+    
+    @wait.until {
+      tab_list = driver.find_element(:css, "[data-test='dropdown-tab-list']")
+      class_value = tab_list.attribute('class')
+      animating_class = 'ng_animating'
+      return true unless class_value.split(' ').include?(animating_class)
+    }
   end  
 
   def click_tab(tab_name, screen_type)
-    if (screen_type == :tablet || screen_type == :handset)
+    if screen_type == :tablet || screen_type == :handset
       menu_tab_identifier = menu_tab_identifiers(tab_name)
-      click_nav_menu
-      @wait.until { driver.find_element(:css, menu_tab_identifier).displayed? }
-      driver.find_element(:css, menu_tab_identifier).click
+      click_nav_menu unless nav_menu_displayed?
+
+      tab = driver.find_element(:css, menu_tab_identifier)
     else
       tab_identifier = tab_identifiers(tab_name)
-      driver.find_element(:css, tab_identifier).click
+      tab = driver.find_element(:css, tab_identifier)
     end
+
+    @wait.until { tab.displayed? && tab.enabled? }
+    tab.click
   end
   
   def tab_identifiers(tab_name)
@@ -107,16 +119,26 @@ class GroupsPage < AbstractPage
   
   def click_logo(screen_type)
     data_test_id = screen_type == :tablet || screen_type == :handset ? "site-title-compact" : "site-title-default"
+    @wait.until { driver.find_element(:css, "[data-test='#{data_test_id}']") }
+    
     driver.find_element(:css, "[data-test='#{data_test_id}']").click
   end
 
-  def is_nav_menu_displayed?
+  def wait_until_nav_menu_displayed?
     @wait.until { driver.find_elements(:css, "[data-test='dropdown-tab-list']").any? }
   end
   
-  def is_nav_menu_hidden?
+  def wait_until_nav_menu_hidden?
     @wait.until { driver.find_elements(:css, "[data-test='dropdown-tab-list']").empty? }
-  end  
+  end
+
+  def nav_menu_displayed?
+    driver.find_elements(:css, "[data-test='dropdown-tab-list']").any?
+  end
+
+  def nav_menu_hidden?
+    !nav_menu_displayed?
+  end
 end
 
 
