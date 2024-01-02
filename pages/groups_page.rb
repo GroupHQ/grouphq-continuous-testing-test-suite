@@ -6,15 +6,57 @@ class GroupsPage < AbstractPage
     @wait = Selenium::WebDriver::Wait.new(:timeout => 5)
   end
 
-  # page functions here ...
-
   def get_groups
     @wait.until { driver.find_element(:xpath, "//*[@data-test='group-card']") }
+    
+    group_cards_container = driver.find_element(:css, "[data-test='group-cards']")
+    wait_until_animation_completes(group_cards_container)
+    
     driver.find_elements(:xpath, "//*[@data-test='group-card']")
   end
+  
+  def get_first_group_card
+    groups = get_groups
+    raise "No groups found" if groups.empty?
+    
+    groups[0]
+  end
+  
+  def get_last_group_card
+    groups = get_groups
+    raise "No groups found" if groups.empty?
+    
+    groups[groups.length - 1]
+  end
+  
+  def click_card(card)
+    card.click
+  end
+  
+  def click_first_group_card
+    groups = get_groups
+    raise "No groups found" if groups.empty?
+    
+    click_card(groups[0])
+  end  
+  
+  def click_last_group_card
+    groups = get_groups
+    raise "No groups found" if groups.empty?
+    
+    click_card(groups[groups.length - 1])
+  end  
 
   def group_member_count_text(group)
-    driver.find_element(:css, "[data-test='member-count'").text
+    driver.find_element(:css, "[data-test='member-count']").text
+  end
+  
+  def get_current_member_count(group)
+    member_count_numbers = group_member_count_text.match(member_count_text_pattern)
+    
+    raise "Invalid member count: #{member_count_text_before}" if member_count_numbers.nil?
+    
+    member_count_numbers[0]
   end
 
   def group_title_text(group)
@@ -64,16 +106,14 @@ class GroupsPage < AbstractPage
   end
   
   def click_nav_menu
+    @wait.until { driver.find_elements(:css, "[aria-label='Toggle menu']").any? }
+    
     menu_icon = driver.find_element(:css, "[aria-label='Toggle menu']")
     @wait.until { menu_icon.enabled? && menu_icon.displayed? }
     menu_icon.click
     
-    @wait.until {
-      tab_list = driver.find_element(:css, "[data-test='dropdown-tab-list']")
-      class_value = tab_list.attribute('class')
-      animating_class = 'ng_animating'
-      return true unless class_value.split(' ').include?(animating_class)
-    }
+    tab_list = driver.find_element(:css, "[data-test='dropdown-tab-list']")
+    wait_until_animation_completes(tab_list)
   end  
 
   def click_tab(tab_name, screen_type)
@@ -123,7 +163,19 @@ class GroupsPage < AbstractPage
     
     driver.find_element(:css, "[data-test='#{data_test_id}']").click
   end
-
+  
+  def has_current_group_icon?(group)
+    begin
+      group.find_element(:css, "[data-test='your-group-icon']")
+    rescue Selenium::WebDriver::Error::NoSuchElementError
+      nil
+    end
+  end
+  
+  def snackbar
+    @wait.until { driver.find_element(:css, "mat-snack-bar-container") }
+  end
+  
   def wait_until_nav_menu_displayed?
     @wait.until { driver.find_elements(:css, "[data-test='dropdown-tab-list']").any? }
   end
