@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "abstract_page.rb")
 class GroupsDetailsPage < AbstractPage
   def initialize(driver)
     super(driver, "") # <= TEXT UNIQUE TO THIS PAGE
-    @wait = Selenium::WebDriver::Wait.new(:timeout => 5)
+    @wait = Selenium::WebDriver::Wait.new(:timeout => 10)
   end
 
   DATA_TEST_ELEMENTS = {
