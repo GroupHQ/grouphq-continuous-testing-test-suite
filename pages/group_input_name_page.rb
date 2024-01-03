@@ -48,7 +48,7 @@ class GroupInputNamePage < AbstractPage
     @wait.until { get_elements(:group_input_name_dialog).one? }
   end
   
-  def wait_until_group_group_input_dialog_closed?
+  def wait_until_group_input_dialog_closed?
     @wait.until { get_elements(:group_input_name_dialog).empty? }
   end
 
@@ -64,13 +64,29 @@ class GroupInputNamePage < AbstractPage
     get_element(:member_name_label, get_group_input_name_dialog)
   end
 
-  def get_member_name_input
-    get_element(:member_name_input, get_group_input_name_dialog)
+  def get_member_name_input(focused = false)
+    element = get_element(:member_name_input, get_group_input_name_dialog)
+    
+    if (focused)
+      @wait.until { element.attribute("data-test") == @driver.switch_to.active_element.attribute("data-test") }
+    end
+    
+    element
   end
 
   def get_member_name_required_error
     get_element(:member_name_required_error, get_group_input_name_dialog)
   end
+  
+  def form_error_state?
+    begin
+      get_element(:member_name_required_error, get_group_input_name_dialog)
+    rescue Selenium::WebDriver::Error::NoSuchElementError, Selenium::WebDriver::Error::StaleElementReferenceError
+      return false
+    end
+    
+    true  
+  end  
 
   def get_close_button
     get_element(:close_button, get_group_input_name_dialog)
@@ -98,10 +114,13 @@ class GroupInputNamePage < AbstractPage
     raise "Join button is disabled" unless join_button.enabled?
 
     join_button.click
-    
-    @wait.until {
-      group_details_dialog.get_group_member_rows.length == member_list_length_before_joining + 1
-    }
+
+    unless form_error_state?
+      @wait.until {
+        group_input_dialog_closed? && 
+        group_details_dialog.get_group_member_rows.length == member_list_length_before_joining + 1
+      }
+    end
   end
 
   private
