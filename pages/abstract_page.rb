@@ -38,6 +38,9 @@ class AbstractPage
       animating_class = "ng-animating"
       return true unless element_classes.split(" ").include?(animating_class)
     }
+
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      # Ignored
   end
 
   def member_count_text_pattern
