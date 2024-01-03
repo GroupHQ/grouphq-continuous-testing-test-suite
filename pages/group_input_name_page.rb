@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "abstract_page.rb")
 class GroupInputNamePage < AbstractPage
   def initialize(driver)
     super(driver, "") # <= TEXT UNIQUE TO THIS PAGE
-    @wait = Selenium::WebDriver::Wait.new(:timeout => 1)
+    @wait = Selenium::WebDriver::Wait.new(:timeout => 5)
   end
   
   DIALOG_CONTENT = {
@@ -89,11 +89,19 @@ class GroupInputNamePage < AbstractPage
   end
 
   def click_join_button
+    group_details_dialog = GroupsDetailsPage.new(@driver)
+    
+    member_list_length_before_joining = group_details_dialog.get_group_member_rows.length
+    
     join_button = get_join_button
     raise "Join button not displayed" unless join_button.displayed?
     raise "Join button is disabled" unless join_button.enabled?
 
     join_button.click
+    
+    @wait.until {
+      group_details_dialog.get_group_member_rows.length == member_list_length_before_joining + 1
+    }
   end
 
   private

@@ -47,4 +47,12 @@ class AbstractPage
   def time_since_text_pattern
     /^\d+\s(?:seconds?|minutes?|hours?) ago$/
   end
+  
+  def snackbar
+    @wait.until { driver.find_element(:css, "mat-snack-bar-container") }
+  end
+  
+  def assert_snackbar_text(expected_text)
+    @wait.until { snackbar.text.include?(expected_text) }
+  end  
 end

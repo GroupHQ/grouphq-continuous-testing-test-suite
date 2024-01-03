@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "abstract_page.rb")
 class GroupsDetailsPage < AbstractPage
   def initialize(driver)
     super(driver, "") # <= TEXT UNIQUE TO THIS PAGE
-    @wait = Selenium::WebDriver::Wait.new(:timeout => 1)
+    @wait = Selenium::WebDriver::Wait.new(:timeout => 5)
   end
 
   DATA_TEST_ELEMENTS = {
@@ -81,16 +81,20 @@ class GroupsDetailsPage < AbstractPage
   end
   
   def get_current_member_count
-    member_count_numbers = get_group_members_count.match(member_count_text_pattern)
+    member_count_numbers = get_group_members_count.text.match(member_count_text_pattern)
     
     raise "Invalid member count: #{member_count_text_before}" if member_count_numbers.nil?
     
-    member_count_numbers[0]
+    member_count_numbers[0].to_i
   end
 
   def get_group_member_list
     get_element(:group_member_list, get_group_details_dialog)
   end
+  
+  def get_group_member_rows
+    get_elements(:group_member, get_group_member_list)
+  end  
   
   def get_detail_header_text(detail_element)
     get_element(:group_detail_title, detail_element).text
@@ -121,7 +125,7 @@ class GroupsDetailsPage < AbstractPage
   end
 
   def get_action_button
-    get_element(:action_button, get_group_details_dialog)
+    @wait.until { get_element(:action_button, get_group_details_dialog) }
   end
 
   def click_close_button
@@ -130,12 +134,18 @@ class GroupsDetailsPage < AbstractPage
 
   def click_leave_button
     leave_button = get_action_button
-
-    raise "Button is not in leave state. Current text: #{leave_button.text}" if user_in_group?
+    
+    member_list_length_before_leaving = get_group_member_rows.length
+    
+    raise "Button is not in leave state. Current text: #{leave_button.text}" unless user_in_group?
     raise "Leave button not displayed" unless leave_button.displayed?
     raise "Leave button is disabled" unless leave_button.enabled?
-
+    
     leave_button.click
+    
+    @wait.until {
+      get_group_member_rows.length == member_list_length_before_leaving - 1
+    }
   end
 
   def click_join_button

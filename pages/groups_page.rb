@@ -48,15 +48,15 @@ class GroupsPage < AbstractPage
   end  
 
   def group_member_count_text(group)
-    driver.find_element(:css, "[data-test='member-count']").text
+    group.find_element(:css, "[data-test='member-count']").text
   end
   
   def get_current_member_count(group)
-    member_count_numbers = group_member_count_text.match(member_count_text_pattern)
+    member_count_numbers = group_member_count_text(group).match(member_count_text_pattern)
     
     raise "Invalid member count: #{member_count_text_before}" if member_count_numbers.nil?
     
-    member_count_numbers[0]
+    member_count_numbers[0].to_i
   end
 
   def group_title_text(group)
@@ -170,10 +170,6 @@ class GroupsPage < AbstractPage
     rescue Selenium::WebDriver::Error::NoSuchElementError
       nil
     end
-  end
-  
-  def snackbar
-    @wait.until { driver.find_element(:css, "mat-snack-bar-container") }
   end
   
   def wait_until_nav_menu_displayed?
