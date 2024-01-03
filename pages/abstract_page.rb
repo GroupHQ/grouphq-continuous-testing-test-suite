@@ -56,6 +56,10 @@ class AbstractPage
   end
   
   def assert_snackbar_text(expected_text)
-    @wait.until { snackbar.text.include?(expected_text) }
+    @wait.until do
+      snackbar.text.include?(expected_text)
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError
+        # Ignored
+    end
   end  
 end
