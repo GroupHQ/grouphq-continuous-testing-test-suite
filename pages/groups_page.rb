@@ -107,7 +107,7 @@ class GroupsPage < AbstractPage
   
   def click_nav_menu
     @wait.until { driver.find_elements(:css, "[aria-label='Toggle menu']").any? }
-    
+
     menu_icon = driver.find_element(:css, "[aria-label='Toggle menu']")
     @wait.until { menu_icon.enabled? && menu_icon.displayed? }
     menu_icon.click
