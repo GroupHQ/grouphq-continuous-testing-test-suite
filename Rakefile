@@ -37,7 +37,11 @@ def specs_for_quick_build
   [
     "01_view_groups_spec.rb",
     "02_navigate_pages_spec.rb",
-    "03_menu_nav_spec.rb"
+    "03_menu_nav_spec.rb",
+    "04_view_group_details_spec.rb",
+    "05_join_group_spec.rb",
+    "06_leave_group_spec.rb",
+    "07_member_sync_spec.rb"
   ]
 end
 

@@ -271,7 +271,7 @@ module TestHelper
 
   def set_window_size_based_on_viewport_size(driver, screen_type)
     viewport_dimensions = get_viewport_dimensions_for(screen_type)
-    
+
     desired_viewport_width = viewport_dimensions[0]
     desired_viewport_height = viewport_dimensions[1]
 
@@ -284,5 +284,28 @@ module TestHelper
     height_difference = desired_viewport_height - current_viewport_height
 
     driver.manage.window.resize_to(desired_viewport_width + width_difference, desired_viewport_height + height_difference)
+  end
+
+  def get_relative_element(tag_name, position, element_relative_from, parent_ref = nil)
+    raise "Position '#{position}' not supported" unless [:above, :right, :below, :left].include?(position)
+
+    argument_hash = {
+      relative: {},
+    }
+
+    argument_hash[:relative][position.to_sym] = element_relative_from
+    argument_hash[:relative][:tag_name] = tag_name.to_s
+
+    begin
+      if (parent_ref)
+        adjacent_element = parent_ref.find_element(argument_hash)
+      else
+        adjacent_element = driver.find_element(argument_hash)
+      end    
+    rescue Selenium::WebDriver::Error::NoSuchElementError
+      nil
+    end
+
+    adjacent_element
   end
 end

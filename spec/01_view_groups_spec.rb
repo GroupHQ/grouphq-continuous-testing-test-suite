@@ -44,8 +44,10 @@ describe "View Groups" do
         expect(groups).not_to be_empty
 
         groups.each do |group|
-          count_text = groups_page.group_member_count_text(group)
-          expect(count_text).to match(/\d+ \/ \d+/), "Group #{group} does not have a valid count format"
+        count_text = groups_page.group_member_count_text(group)
+        
+        expect(count_text).to match(groups_page.member_count_text_pattern), 
+        "Group #{group} does not have a valid count format"
         end
       end
 
@@ -56,9 +58,11 @@ describe "View Groups" do
 
         groups.each do |group|
           count_text = groups_page.group_member_count_text(group)
-          match = count_text.match(/\b(\d+) \/ (\d+)\b/)
+          
+          match = count_text.match(groups_page.member_count_text_pattern)
+          
           expect(match).not_to be_nil, "Group #{group} does not have a valid count format"
-
+          
           current_count = match[1].to_i
           total_count = match[2].to_i
 
