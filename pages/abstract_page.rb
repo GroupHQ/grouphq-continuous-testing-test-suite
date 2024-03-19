@@ -48,7 +48,7 @@ class AbstractPage
   end
   
   def time_since_text_pattern
-    /^\d+\s(?:seconds?|minutes?|hours?) ago$/
+    /^(?:\d+\s(?:seconds?|minutes?|hours?) ago|a few seconds ago)$/
   end
   
   def snackbar

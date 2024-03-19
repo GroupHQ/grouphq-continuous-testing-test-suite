@@ -1,6 +1,6 @@
 load File.dirname(__FILE__) + "/../test_helper.rb"
 
-describe "04JoinGroup" do
+describe "05JoinGroup" do
   include TestHelper
 
   def self.general_device_tests(screen_type)
