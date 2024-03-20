@@ -1,5 +1,3 @@
-_This README is a work in progress. Some steps may be incomplete or missing_
-
 # GroupHQ Continuous Testing Test Suite
 Contains user-automated acceptance tests for either user-interface tests or API tests.
 Tests are written using Ruby and the RSpec testing framework. UI tests are written using Selenium WebDriver for Ruby.
